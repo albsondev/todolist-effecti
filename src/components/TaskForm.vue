@@ -19,9 +19,19 @@ export default {
   props: ["taskData", "isEditing"],
   data() {
     return {
-      task: this.taskData || { title: "", description: "", priority: "Média" },
+      task: { title: "", description: "", priority: "Média" },
       priorities: ["Baixa", "Média", "Alta"],
     };
+  },
+  watch: {
+    taskData: {
+      immediate: true,
+      handler(newTask) {
+        this.task = newTask
+          ? { ...newTask }
+          : { title: "", description: "", priority: "Média" };
+      },
+    },
   },
   methods: {
     handleSubmit() {

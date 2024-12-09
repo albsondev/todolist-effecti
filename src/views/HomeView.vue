@@ -75,8 +75,9 @@ export default {
       this.closeTaskForm();
     },
 
+    // Edita a tarefa
     editTask(task) {
-      this.taskToEdit = { ...task };
+      this.taskToEdit = { ...task }; // Clona os dados da tarefa
       this.isEditing = true;
       this.isTaskFormVisible = true;
     },

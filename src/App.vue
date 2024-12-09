@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app color="primary" dark>
-      <v-toolbar-title>ToDoList - Effecti</v-toolbar-title>
+      <v-toolbar-title>TodoList - Effecti</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click="toggleTheme">
         <v-icon>{{ themeIcon }}</v-icon>
