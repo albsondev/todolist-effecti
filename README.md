@@ -1,4 +1,4 @@
-# todolist-effecti
+# todo-app
 
 ## Project setup
 ```

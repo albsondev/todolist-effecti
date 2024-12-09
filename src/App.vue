@@ -1,28 +1,49 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-app-bar app color="primary" dark>
+      <v-toolbar-title>ToDoList - Effecti</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon @click="toggleTheme">
+        <v-icon>{{ themeIcon }}</v-icon>
+      </v-btn>
+    </v-app-bar>
+
+    <v-main>
+      <router-view />
+    </v-main>
+
+    <v-footer app color="primary" dark>
+      <span class="white--text">© 2024 - Feito com ❤️ por André Albson</span>
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: "App",
+  data() {
+    return {
+      isDarkTheme: false,
+    };
+  },
+  computed: {
+    themeIcon() {
+      return this.isDarkTheme ? "mdi-weather-sunny" : "mdi-weather-night";
+    },
+  },
+  methods: {
+    toggleTheme() {
+      this.isDarkTheme = !this.isDarkTheme;
+      this.$vuetify.theme.dark = this.isDarkTheme;
+    },
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+html,
+body {
+  height: 100%;
+  margin: 0;
 }
 </style>
