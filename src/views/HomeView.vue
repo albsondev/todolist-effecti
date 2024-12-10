@@ -22,33 +22,57 @@
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="8">
-        <v-sheet height="500">
-          <v-calendar
-            :now="today"
-            :value="today"
-            color="primary"
-            @click:day="handleDayClick"
-          >
-            <template v-slot:day="{ date }">
-              <v-row class="fill-height">
-                <template v-if="tracked[date]">
-                  <v-sheet
-                    v-for="(task, i) in tracked[date]"
-                    :key="i"
-                    :title="task.title"
-                    :color="getTaskColor(task.priority)"
-                    :width="`${getTaskPercentage(date, task.priority)}%`"
-                    height="100%"
-                    tile
-                  ></v-sheet>
-                </template>
-              </v-row>
-            </template>
-          </v-calendar>
-        </v-sheet>
-        <v-row v-if="showList">
-          <v-col v-for="task in selectedTasks" :key="task.id" cols="12" md="6">
-            <v-card>
+        <calendar-view
+          v-if="showCalendar"
+          :tracked="tracked"
+          @handleDayClick="handleDayClick"
+        />
+        <v-row v-if="!showCalendar">
+          <v-col cols="12" md="4">
+            <h3>Baixa</h3>
+            <v-card
+              v-for="task in lowPriorityTasks"
+              :key="task.id"
+              class="mb-2"
+            >
+              <v-card-title>{{ task.title }}</v-card-title>
+              <v-card-subtitle>{{ task.description }}</v-card-subtitle>
+              <v-card-actions>
+                <v-btn icon @click="editTask(task)">
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn icon @click="deleteTask(task.id)">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+          <v-col cols="12" md="4">
+            <h3>Média</h3>
+            <v-card
+              v-for="task in mediumPriorityTasks"
+              :key="task.id"
+              class="mb-2"
+            >
+              <v-card-title>{{ task.title }}</v-card-title>
+              <v-card-subtitle>{{ task.description }}</v-card-subtitle>
+              <v-card-actions>
+                <v-btn icon @click="editTask(task)">
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn icon @click="deleteTask(task.id)">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+          <v-col cols="12" md="4">
+            <h3>Alta</h3>
+            <v-card
+              v-for="task in highPriorityTasks"
+              :key="task.id"
+              class="mb-2"
+            >
               <v-card-title>{{ task.title }}</v-card-title>
               <v-card-subtitle>{{ task.description }}</v-card-subtitle>
               <v-card-actions>
@@ -69,16 +93,17 @@
 
 <script>
 import TaskForm from "../components/TaskForm.vue";
+import CalendarView from "../components/CalendarView.vue";
 
 export default {
-  components: { TaskForm },
+  components: { TaskForm, CalendarView },
   data() {
     return {
       searchQuery: "",
       currentTask: this.createEmptyTask(),
-      today: new Date().toISOString().substr(0, 10),
       showForm: false,
       showList: false,
+      showCalendar: true,
       selectedTasks: [],
     };
   },
@@ -92,6 +117,21 @@ export default {
         tasksByDate[task.date].push(task);
       });
       return tasksByDate;
+    },
+    lowPriorityTasks() {
+      return this.$store.getters.allTasks.filter(
+        (task) => task.priority === "low"
+      );
+    },
+    mediumPriorityTasks() {
+      return this.$store.getters.allTasks.filter(
+        (task) => task.priority === "medium"
+      );
+    },
+    highPriorityTasks() {
+      return this.$store.getters.allTasks.filter(
+        (task) => task.priority === "high"
+      );
     },
   },
   methods: {
@@ -125,23 +165,6 @@ export default {
         date: new Date().toISOString().substr(0, 10),
       };
     },
-    getTaskColor(priority) {
-      switch (priority) {
-        case "low":
-          return "#90e0ef";
-        case "medium":
-          return "#0077b6";
-        case "high":
-          return "#03045e";
-        default:
-          return "grey";
-      }
-    },
-    getTaskPercentage(date, priority) {
-      const tasks = this.tracked[date];
-      const count = tasks.filter((task) => task.priority === priority).length;
-      return (count / tasks.length) * 100;
-    },
     handleDayClick({ date }) {
       const tasks = this.tracked[date];
       if (tasks && tasks.length > 0) {
@@ -154,6 +177,11 @@ export default {
         }
       }
     },
+  },
+  created() {
+    this.$root.$on("toggle-calendar", (show) => {
+      this.showCalendar = show;
+    });
   },
 };
 </script>

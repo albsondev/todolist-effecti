@@ -3,6 +3,9 @@
     <v-app-bar app color="primary" dark>
       <v-toolbar-title>TodoList - Effecti</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn icon @click="toggleCalendar">
+        <v-icon>{{ calendarIcon }}</v-icon>
+      </v-btn>
       <v-btn icon @click="toggleTheme">
         <v-icon>{{ themeIcon }}</v-icon>
       </v-btn>
@@ -24,17 +27,25 @@ export default {
   data() {
     return {
       isDarkTheme: false,
+      showCalendar: true,
     };
   },
   computed: {
     themeIcon() {
       return this.isDarkTheme ? "mdi-weather-sunny" : "mdi-weather-night";
     },
+    calendarIcon() {
+      return this.showCalendar ? "mdi-calendar-remove" : "mdi-calendar";
+    },
   },
   methods: {
     toggleTheme() {
       this.isDarkTheme = !this.isDarkTheme;
       this.$vuetify.theme.dark = this.isDarkTheme;
+    },
+    toggleCalendar() {
+      this.showCalendar = !this.showCalendar;
+      this.$root.$emit("toggle-calendar", this.showCalendar);
     },
   },
 };
