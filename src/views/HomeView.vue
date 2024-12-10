@@ -2,23 +2,66 @@
   <v-container>
     <v-row>
       <v-col cols="12" md="4">
-        <task-form @save-task="handleSaveTask" :task="currentTask" />
-      </v-col>
-      <v-col cols="12" md="8">
+        <task-form
+          v-if="showForm"
+          @save-task="handleSaveTask"
+          :task="currentTask"
+        />
+        <v-btn
+          v-if="!showForm"
+          @click="resetCurrentTask"
+          color="primary"
+          class="mt-2"
+        >
+          Add New Task
+        </v-btn>
         <v-text-field
           v-model="searchQuery"
           label="Search Tasks"
           class="mb-4"
         ></v-text-field>
-        <v-btn @click="simulateLargeDataSet" color="secondary" class="mb-4">
-          Simulate Large Data Set
-        </v-btn>
-        <task-list
-          :tasks="filteredTasks"
-          @edit-task="editTask"
-          @delete-task="deleteTask"
-          @toggle-status="toggleTaskStatus"
-        />
+      </v-col>
+      <v-col cols="12" md="8">
+        <v-sheet height="500">
+          <v-calendar
+            :now="today"
+            :value="today"
+            color="primary"
+            @click:day="handleDayClick"
+          >
+            <template v-slot:day="{ date }">
+              <v-row class="fill-height">
+                <template v-if="tracked[date]">
+                  <v-sheet
+                    v-for="(task, i) in tracked[date]"
+                    :key="i"
+                    :title="task.title"
+                    :color="getTaskColor(task.priority)"
+                    :width="`${getTaskPercentage(date, task.priority)}%`"
+                    height="100%"
+                    tile
+                  ></v-sheet>
+                </template>
+              </v-row>
+            </template>
+          </v-calendar>
+        </v-sheet>
+        <v-row v-if="showList">
+          <v-col v-for="task in selectedTasks" :key="task.id" cols="12" md="6">
+            <v-card>
+              <v-card-title>{{ task.title }}</v-card-title>
+              <v-card-subtitle>{{ task.description }}</v-card-subtitle>
+              <v-card-actions>
+                <v-btn icon @click="editTask(task)">
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn icon @click="deleteTask(task.id)">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>
@@ -26,25 +69,29 @@
 
 <script>
 import TaskForm from "../components/TaskForm.vue";
-import TaskList from "../components/TaskList.vue";
 
 export default {
-  components: { TaskForm, TaskList },
+  components: { TaskForm },
   data() {
     return {
       searchQuery: "",
       currentTask: this.createEmptyTask(),
+      today: new Date().toISOString().substr(0, 10),
+      showForm: false,
+      showList: false,
+      selectedTasks: [],
     };
   },
   computed: {
-    filteredTasks() {
-      return this.$store.getters.allTasks.filter(
-        (task) =>
-          task.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          task.description
-            .toLowerCase()
-            .includes(this.searchQuery.toLowerCase())
-      );
+    tracked() {
+      const tasksByDate = {};
+      this.$store.getters.allTasks.forEach((task) => {
+        if (!tasksByDate[task.date]) {
+          tasksByDate[task.date] = [];
+        }
+        tasksByDate[task.date].push(task);
+      });
+      return tasksByDate;
     },
   },
   methods: {
@@ -58,18 +105,16 @@ export default {
     },
     editTask(task) {
       this.currentTask = { ...task };
+      this.showForm = true;
+      this.showList = false;
     },
     deleteTask(id) {
       this.$store.dispatch("deleteTask", id);
     },
-    toggleTaskStatus(id) {
-      this.$store.dispatch("toggleTaskStatus", id);
-    },
-    simulateLargeDataSet() {
-      this.$store.dispatch("simulateLargeDataSet");
-    },
     resetCurrentTask() {
       this.currentTask = this.createEmptyTask();
+      this.showForm = true;
+      this.showList = false;
     },
     createEmptyTask() {
       return {
@@ -77,7 +122,37 @@ export default {
         description: "",
         priority: "low",
         completed: false,
+        date: new Date().toISOString().substr(0, 10),
       };
+    },
+    getTaskColor(priority) {
+      switch (priority) {
+        case "low":
+          return "#90e0ef";
+        case "medium":
+          return "#0077b6";
+        case "high":
+          return "#03045e";
+        default:
+          return "grey";
+      }
+    },
+    getTaskPercentage(date, priority) {
+      const tasks = this.tracked[date];
+      const count = tasks.filter((task) => task.priority === priority).length;
+      return (count / tasks.length) * 100;
+    },
+    handleDayClick({ date }) {
+      const tasks = this.tracked[date];
+      if (tasks && tasks.length > 0) {
+        if (tasks.length === 1) {
+          this.editTask(tasks[0]);
+        } else {
+          this.selectedTasks = tasks;
+          this.showList = true;
+          this.showForm = false;
+        }
+      }
     },
   },
 };

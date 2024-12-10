@@ -14,6 +14,33 @@
       :items="priorities"
       label="Priority"
     ></v-select>
+    <v-menu
+      ref="menu"
+      v-model="menu"
+      :close-on-content-click="false"
+      :nudge-right="40"
+      transition="scale-transition"
+      offset-y
+      min-width="290px"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-text-field
+          v-model="localTask.date"
+          label="Activity Date"
+          prepend-icon="mdi-calendar"
+          readonly
+          v-bind="attrs"
+          v-on="on"
+        ></v-text-field>
+      </template>
+      <v-date-picker
+        v-model="localTask.date"
+        :min="minDate"
+        :max="maxDate"
+        no-title
+        @input="menu = false"
+      ></v-date-picker>
+    </v-menu>
     <v-btn type="submit" color="primary">{{
       isEditing ? "Update Task" : "Add Task"
     }}</v-btn>
@@ -30,6 +57,7 @@ export default {
         description: "",
         priority: "low",
         completed: false,
+        date: new Date().toISOString().substr(0, 10),
       }),
     },
   },
@@ -37,6 +65,11 @@ export default {
     return {
       localTask: { ...this.task },
       priorities: ["low", "medium", "high"],
+      menu: false,
+      minDate: new Date().toISOString().substr(0, 10),
+      maxDate: new Date(new Date().getFullYear(), 11, 31)
+        .toISOString()
+        .substr(0, 10),
     };
   },
   computed: {
@@ -67,6 +100,7 @@ export default {
         description: "",
         priority: "low",
         completed: false,
+        date: new Date().toISOString().substr(0, 10),
       };
     },
   },
