@@ -1,6 +1,7 @@
-<template>
-  <v-sheet height="500">
+<template class="bg-light">
+  <v-sheet height="78vh">
     <v-calendar
+      class="bg-light"
       :now="today"
       :value="today"
       color="primary"
@@ -57,3 +58,13 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+div.theme--dark .bg-light {
+  background-color: #1a1a1a;
+}
+
+.bg-light {
+  background-color: #f8f9fa;
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
-  <v-row>
-    <v-col cols="12" md="4">
-      <h3>Baixa</h3>
+  <v-row class="bg-light pd row-kanban">
+    <v-col cols="12" md="4" class="border-r">
+      <h3 class="col-low border-b text-center">Baixa</h3>
       <v-card v-for="task in lowPriorityTasks" :key="task.id" class="mb-2">
         <v-card-title>{{ task.title }}</v-card-title>
         <v-card-subtitle>{{ task.description }}</v-card-subtitle>
@@ -15,8 +15,8 @@
         </v-card-actions>
       </v-card>
     </v-col>
-    <v-col cols="12" md="4">
-      <h3>Média</h3>
+    <v-col cols="12" md="4" class="border-r">
+      <h3 class="col-medium border-b text-center">Média</h3>
       <v-card v-for="task in mediumPriorityTasks" :key="task.id" class="mb-2">
         <v-card-title>{{ task.title }}</v-card-title>
         <v-card-subtitle>{{ task.description }}</v-card-subtitle>
@@ -30,8 +30,8 @@
         </v-card-actions>
       </v-card>
     </v-col>
-    <v-col cols="12" md="4">
-      <h3>Alta</h3>
+    <v-col cols="12" md="4" class="">
+      <h3 class="col-high border-b text-center">Alta</h3>
       <v-card v-for="task in highPriorityTasks" :key="task.id" class="mb-2">
         <v-card-title>{{ task.title }}</v-card-title>
         <v-card-subtitle>{{ task.description }}</v-card-subtitle>
@@ -65,7 +65,58 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style scoped>
+div.theme--dark .bg-light {
+  background-color: #1a1a1a;
+}
+
+.row-kanban {
+  height: 84vh;
+}
+
+.bg-light {
+  background-color: #f8f9fa;
+}
+
+h3 {
+  padding-bottom: 1em !important;
+  padding-top: 0.25em;
+  background-color: #ececec;
+  filter: drop-shadow(1px 3px 4px rgba(0, 0, 0, 0.25));
+  border-bottom-color: rgb(136, 136, 136) !important;
+}
+
+.pd {
+  padding: 1.25rem;
+}
+
+.border-b {
+  border-bottom: 3px solid #bdbdbd;
+}
+
+.col-low {
+  border-bottom: 1px solid #90e0ef !important;
+  border-width: 3px !important;
+}
+
+.col-medium {
+  border-bottom: 1px solid #0077b6 !important;
+  border-width: 3px !important;
+}
+
+.col-high {
+  border-bottom: 1px solid #03045e !important;
+  border-width: 3px !important;
+}
+
+.border-r {
+  border-right: 1px solid #ddd;
+}
+
+.text-center {
+  text-align: center;
+}
+
 .mb-2 {
   margin-bottom: 8px;
 }
@@ -75,27 +126,27 @@ h3 {
   color: #333;
 }
 
-v-card {
+.v-card {
   border: 1px solid #ddd;
   transition: box-shadow 0.3s;
+}
 
-  &:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+.v-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-  v-card-title {
-    font-weight: bold;
-    color: red !important;
-    border-bottom: 1px solid #ddd;
-    width: 100% !important;
-  }
+.v-card > .v-card-title {
+  font-weight: bold;
+  color: red !important;
+  border-bottom: 1px solid #ddd;
+  width: 100% !important;
+}
 
-  v-card-subtitle {
-    color: #666;
-  }
+v-card-subtitle {
+  color: #666;
+}
 
-  v-card-actions {
-    justify-content: flex-end;
-  }
+v-card-actions {
+  justify-content: flex-end;
 }
 </style>

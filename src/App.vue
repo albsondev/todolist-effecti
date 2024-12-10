@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       isDarkTheme: false,
-      showCalendar: true,
+      showCalendar: false,
     };
   },
   computed: {

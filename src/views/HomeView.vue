@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col cols="12" md="4">
         <task-form
@@ -50,8 +50,8 @@ export default {
       searchQuery: "",
       currentTask: this.createEmptyTask(),
       showForm: false,
-      showList: false,
-      showCalendar: true,
+      showList: true,
+      showCalendar: false,
       selectedTasks: [],
     };
   },
