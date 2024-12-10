@@ -1,7 +1,7 @@
 <template>
   <v-row class="bg-light pd row-kanban">
     <v-col cols="12" md="4" class="border-r">
-      <h3 class="col-low border-b text-center">Baixa</h3>
+      <h3 class="col-low border-b text-center">Low</h3>
       <v-card v-for="task in lowPriorityTasks" :key="task.id" class="mb-2">
         <v-card-title>{{ task.title }}</v-card-title>
         <v-card-subtitle>{{ task.description }}</v-card-subtitle>
@@ -16,7 +16,7 @@
       </v-card>
     </v-col>
     <v-col cols="12" md="4" class="border-r">
-      <h3 class="col-medium border-b text-center">Média</h3>
+      <h3 class="col-medium border-b text-center">Medium</h3>
       <v-card v-for="task in mediumPriorityTasks" :key="task.id" class="mb-2">
         <v-card-title>{{ task.title }}</v-card-title>
         <v-card-subtitle>{{ task.description }}</v-card-subtitle>
@@ -31,7 +31,7 @@
       </v-card>
     </v-col>
     <v-col cols="12" md="4" class="">
-      <h3 class="col-high border-b text-center">Alta</h3>
+      <h3 class="col-high border-b text-center">High</h3>
       <v-card v-for="task in highPriorityTasks" :key="task.id" class="mb-2">
         <v-card-title>{{ task.title }}</v-card-title>
         <v-card-subtitle>{{ task.description }}</v-card-subtitle>
