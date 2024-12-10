@@ -29,7 +29,7 @@ export default {
       handler(newTask) {
         this.task = newTask
           ? { ...newTask }
-          : { title: "", description: "", priority: "Média" };
+          : { title: "", description: "", priority: "" };
       },
     },
   },

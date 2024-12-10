@@ -9,8 +9,11 @@ const mutations = {
   },
   EDIT_TASK(state, updatedTask) {
     const index = state.tasks.findIndex((task) => task.id === updatedTask.id);
-    if (index !== -1) state.tasks.splice(index, 1, updatedTask);
-    localStorage.setItem("tasks", JSON.stringify(state.tasks));
+    if (index !== -1) {
+      // Substitui a tarefa na lista de tarefas
+      state.tasks.splice(index, 1, { ...updatedTask });
+      localStorage.setItem("tasks", JSON.stringify(state.tasks)); // Atualiza o localStorage
+    }
   },
   DELETE_TASK(state, taskId) {
     state.tasks = state.tasks.filter((task) => task.id !== taskId);

@@ -60,12 +60,14 @@ export default {
   methods: {
     ...mapActions("tasks", ["addTask", "editTask", "deleteTask"]),
 
+    // Abre o modal para criar uma nova tarefa
     openTaskForm() {
       this.taskToEdit = null;
       this.isEditing = false;
       this.isTaskFormVisible = true;
     },
 
+    // Recebe os dados enviados pelo formulário (nova tarefa ou edição)
     handleTaskFormSubmit(task) {
       if (this.isEditing) {
         this.editTask(task);
@@ -75,17 +77,14 @@ export default {
       this.closeTaskForm();
     },
 
-    // Edita a tarefa
+    // Preenche os dados de uma tarefa a ser editada e abre o modal
     editTask(task) {
-      this.taskToEdit = { ...task }; // Clona os dados da tarefa
+      this.taskToEdit = { ...task };
       this.isEditing = true;
       this.isTaskFormVisible = true;
     },
 
-    deleteTask(taskId) {
-      this.deleteTask(taskId);
-    },
-
+    // Fecha o modal de formulário
     closeTaskForm() {
       this.isTaskFormVisible = false;
       this.taskToEdit = null;
