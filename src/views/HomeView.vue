@@ -27,65 +27,12 @@
           :tracked="tracked"
           @handleDayClick="handleDayClick"
         />
-        <v-row v-if="!showCalendar">
-          <v-col cols="12" md="4">
-            <h3>Baixa</h3>
-            <v-card
-              v-for="task in lowPriorityTasks"
-              :key="task.id"
-              class="mb-2"
-            >
-              <v-card-title>{{ task.title }}</v-card-title>
-              <v-card-subtitle>{{ task.description }}</v-card-subtitle>
-              <v-card-actions>
-                <v-btn icon @click="editTask(task)">
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-                <v-btn icon @click="deleteTask(task.id)">
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-          <v-col cols="12" md="4">
-            <h3>Média</h3>
-            <v-card
-              v-for="task in mediumPriorityTasks"
-              :key="task.id"
-              class="mb-2"
-            >
-              <v-card-title>{{ task.title }}</v-card-title>
-              <v-card-subtitle>{{ task.description }}</v-card-subtitle>
-              <v-card-actions>
-                <v-btn icon @click="editTask(task)">
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-                <v-btn icon @click="deleteTask(task.id)">
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-          <v-col cols="12" md="4">
-            <h3>Alta</h3>
-            <v-card
-              v-for="task in highPriorityTasks"
-              :key="task.id"
-              class="mb-2"
-            >
-              <v-card-title>{{ task.title }}</v-card-title>
-              <v-card-subtitle>{{ task.description }}</v-card-subtitle>
-              <v-card-actions>
-                <v-btn icon @click="editTask(task)">
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-                <v-btn icon @click="deleteTask(task.id)">
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
+        <kanban-view
+          v-if="!showCalendar"
+          :tasks="$store.getters.allTasks"
+          @edit-task="editTask"
+          @delete-task="deleteTask"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -94,9 +41,10 @@
 <script>
 import TaskForm from "../components/TaskForm.vue";
 import CalendarView from "../components/CalendarView.vue";
+import KanbanView from "../components/KanbanView.vue";
 
 export default {
-  components: { TaskForm, CalendarView },
+  components: { TaskForm, CalendarView, KanbanView },
   data() {
     return {
       searchQuery: "",
@@ -117,21 +65,6 @@ export default {
         tasksByDate[task.date].push(task);
       });
       return tasksByDate;
-    },
-    lowPriorityTasks() {
-      return this.$store.getters.allTasks.filter(
-        (task) => task.priority === "low"
-      );
-    },
-    mediumPriorityTasks() {
-      return this.$store.getters.allTasks.filter(
-        (task) => task.priority === "medium"
-      );
-    },
-    highPriorityTasks() {
-      return this.$store.getters.allTasks.filter(
-        (task) => task.priority === "high"
-      );
     },
   },
   methods: {
