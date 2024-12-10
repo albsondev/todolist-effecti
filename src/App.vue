@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
+    <v-app-bar app color="#008cff" dark dense elevation="4">
       <v-toolbar-title>TodoList - Effecti</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click="toggleCalendar">

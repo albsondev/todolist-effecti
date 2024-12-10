@@ -1,38 +1,46 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" md="4">
-        <task-form
-          v-if="showForm"
-          @save-task="handleSaveTask"
-          :task="currentTask"
-        />
+      <v-col class="flex" cols="12" md="4">
+        <v-text-field
+          v-if="!showForm"
+          v-model="searchQuery"
+          label="Search Tasks"
+          class="mb-4 filter mr-2"
+          append-icon="mdi-magnify"
+          @click:append="resetSearch"
+        ></v-text-field>
         <v-btn
           v-if="!showForm"
           @click="resetCurrentTask"
           color="primary"
           class="mt-2"
         >
-          Add New Task
+          New Task
         </v-btn>
-        <v-text-field
-          v-model="searchQuery"
-          label="Search Tasks"
-          class="mb-4"
-        ></v-text-field>
+        <task-form
+          v-if="showForm"
+          @save-task="handleSaveTask"
+          @cancel="cancelEdit"
+          :task="currentTask"
+        />
       </v-col>
       <v-col cols="12" md="8">
-        <calendar-view
-          v-if="showCalendar"
-          :tracked="tracked"
-          @handleDayClick="handleDayClick"
-        />
-        <kanban-view
-          v-if="!showCalendar"
-          :tasks="$store.getters.allTasks"
-          @edit-task="editTask"
-          @delete-task="deleteTask"
-        />
+        <transition name="fade">
+          <calendar-view
+            v-if="showCalendar"
+            :tracked="filteredTracked"
+            @handleDayClick="handleDayClick"
+          />
+        </transition>
+        <transition name="fade">
+          <kanban-view
+            v-if="!showCalendar"
+            :tasks="filteredTasks"
+            @edit-task="editTask"
+            @delete-task="deleteTask"
+          />
+        </transition>
       </v-col>
     </v-row>
   </v-container>
@@ -50,15 +58,21 @@ export default {
       searchQuery: "",
       currentTask: this.createEmptyTask(),
       showForm: false,
-      showList: true,
-      showCalendar: false,
+      showCalendar: true,
       selectedTasks: [],
     };
   },
   computed: {
-    tracked() {
+    filteredTasks() {
+      return this.$store.getters.allTasks.filter(
+        (task) =>
+          task.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          task.priority.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    },
+    filteredTracked() {
       const tasksByDate = {};
-      this.$store.getters.allTasks.forEach((task) => {
+      this.filteredTasks.forEach((task) => {
         if (!tasksByDate[task.date]) {
           tasksByDate[task.date] = [];
         }
@@ -79,7 +93,6 @@ export default {
     editTask(task) {
       this.currentTask = { ...task };
       this.showForm = true;
-      this.showList = false;
     },
     deleteTask(id) {
       this.$store.dispatch("deleteTask", id);
@@ -87,7 +100,6 @@ export default {
     resetCurrentTask() {
       this.currentTask = this.createEmptyTask();
       this.showForm = true;
-      this.showList = false;
     },
     createEmptyTask() {
       return {
@@ -99,16 +111,21 @@ export default {
       };
     },
     handleDayClick({ date }) {
-      const tasks = this.tracked[date];
+      const tasks = this.filteredTracked[date];
       if (tasks && tasks.length > 0) {
         if (tasks.length === 1) {
           this.editTask(tasks[0]);
         } else {
           this.selectedTasks = tasks;
-          this.showList = true;
-          this.showForm = false;
+          this.showCalendar = false;
         }
       }
+    },
+    resetSearch() {
+      this.searchQuery = "";
+    },
+    cancelEdit() {
+      this.showForm = false;
     },
   },
   created() {
@@ -123,7 +140,23 @@ export default {
 .mb-4 {
   margin-bottom: 16px;
 }
+.flex {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+}
 .mt-2 {
   margin-top: 8px;
+}
+.mr-2 {
+  margin-right: 2em !important;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

@@ -44,6 +44,9 @@
     <v-btn type="submit" color="primary">{{
       isEditing ? "Update Task" : "Add Task"
     }}</v-btn>
+    <v-btn class="ml-2" @click="$emit('cancel')" color="secondary"
+      >Cancel</v-btn
+    >
   </v-form>
 </template>
 
@@ -103,6 +106,15 @@ export default {
         date: new Date().toISOString().substr(0, 10),
       };
     },
+    cancelEdit() {
+      this.showForm = false;
+    },
   },
 };
 </script>
+
+<style scoped>
+.ml-2 {
+  margin-left: 10px;
+}
+</style>
