@@ -1,94 +1,83 @@
 <template>
   <v-container>
-    <v-row justify="space-between" align="center" class="mb-4">
-      <v-text-field
-        v-model="search"
-        label="Buscar tarefas"
-        prepend-icon="mdi-magnify"
-        clearable
-      />
-
-      <v-btn color="primary" @click="openTaskForm">
-        <v-icon left>mdi-plus</v-icon>
-        Nova Tarefa
-      </v-btn>
+    <v-row>
+      <v-col cols="12" md="4">
+        <task-form @save-task="handleSaveTask" :task="currentTask" />
+      </v-col>
+      <v-col cols="12" md="8">
+        <v-text-field
+          v-model="searchQuery"
+          label="Search Tasks"
+          class="mb-4"
+        ></v-text-field>
+        <v-btn @click="simulateLargeDataSet" color="secondary" class="mb-4">
+          Simulate Large Data Set
+        </v-btn>
+        <task-list
+          :tasks="filteredTasks"
+          @edit-task="editTask"
+          @delete-task="deleteTask"
+          @toggle-status="toggleTaskStatus"
+        />
+      </v-col>
     </v-row>
-
-    <task-list :tasks="filteredTasks" @edit="editTask" @delete="deleteTask" />
-
-    <v-dialog v-model="isTaskFormVisible" max-width="600px">
-      <task-form
-        :task-data="taskToEdit"
-        :is-editing="isEditing"
-        @submit="handleTaskFormSubmit"
-      />
-    </v-dialog>
   </v-container>
 </template>
 
 <script>
-import TaskList from "@/components/TaskList.vue";
-import TaskForm from "@/components/TaskForm.vue";
-import { mapActions, mapGetters } from "vuex";
+import TaskForm from "../components/TaskForm.vue";
+import TaskList from "../components/TaskList.vue";
 
 export default {
-  name: "HomeView",
-  components: {
-    TaskList,
-    TaskForm,
-  },
+  components: { TaskForm, TaskList },
   data() {
     return {
-      search: "",
-      isTaskFormVisible: false,
-      taskToEdit: null,
-      isEditing: false,
+      searchQuery: "",
+      currentTask: this.createEmptyTask(),
     };
   },
   computed: {
-    ...mapGetters("tasks", ["getAllTasks"]),
-
     filteredTasks() {
-      if (!this.search) return this.getAllTasks;
-      return this.getAllTasks.filter(
+      return this.$store.getters.allTasks.filter(
         (task) =>
-          task.title.toLowerCase().includes(this.search.toLowerCase()) ||
-          task.description.toLowerCase().includes(this.search.toLowerCase())
+          task.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          task.description
+            .toLowerCase()
+            .includes(this.searchQuery.toLowerCase())
       );
     },
   },
   methods: {
-    ...mapActions("tasks", ["addTask", "editTask", "deleteTask"]),
-
-    // Abre o modal para criar uma nova tarefa
-    openTaskForm() {
-      this.taskToEdit = null;
-      this.isEditing = false;
-      this.isTaskFormVisible = true;
-    },
-
-    // Recebe os dados enviados pelo formulário (nova tarefa ou edição)
-    handleTaskFormSubmit(task) {
-      if (this.isEditing) {
-        this.editTask(task);
+    handleSaveTask(task) {
+      if (this.currentTask.id) {
+        this.$store.dispatch("updateTask", task);
       } else {
-        this.addTask(task);
+        this.$store.dispatch("addTask", task);
       }
-      this.closeTaskForm();
+      this.resetCurrentTask();
     },
-
-    // Preenche os dados de uma tarefa a ser editada e abre o modal
     editTask(task) {
-      this.taskToEdit = { ...task };
-      this.isEditing = true;
-      this.isTaskFormVisible = true;
+      this.currentTask = { ...task };
     },
-
-    // Fecha o modal de formulário
-    closeTaskForm() {
-      this.isTaskFormVisible = false;
-      this.taskToEdit = null;
-      this.isEditing = false;
+    deleteTask(id) {
+      this.$store.dispatch("deleteTask", id);
+    },
+    toggleTaskStatus(id) {
+      this.$store.dispatch("toggleTaskStatus", id);
+    },
+    simulateLargeDataSet() {
+      this.$store.dispatch("simulateLargeDataSet");
+    },
+    resetCurrentTask() {
+      this.currentTask = this.createEmptyTask();
+    },
+    createEmptyTask() {
+      return {
+        title: "",
+        description: "",
+        priority: "low",
+        completed: false,
+      };
     },
   },
 };
@@ -97,5 +86,8 @@ export default {
 <style scoped>
 .mb-4 {
   margin-bottom: 16px;
+}
+.mt-2 {
+  margin-top: 8px;
 }
 </style>

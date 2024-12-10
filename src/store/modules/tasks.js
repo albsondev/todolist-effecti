@@ -1,46 +1,56 @@
-const state = () => ({
-  tasks: JSON.parse(localStorage.getItem("tasks")) || [], // Carrega as tarefas do localStorage ao iniciar
-});
+const state = {
+  tasks: JSON.parse(localStorage.getItem("tasks")) || [],
+};
 
-const mutations = {
-  ADD_TASK(state, task) {
-    state.tasks.push({ ...task, id: Date.now(), completed: false });
-    localStorage.setItem("tasks", JSON.stringify(state.tasks));
-  },
-  EDIT_TASK(state, updatedTask) {
-    const index = state.tasks.findIndex((task) => task.id === updatedTask.id);
-    if (index !== -1) {
-      // Substitui a tarefa na lista de tarefas
-      state.tasks.splice(index, 1, { ...updatedTask });
-      localStorage.setItem("tasks", JSON.stringify(state.tasks)); // Atualiza o localStorage
-    }
-  },
-  DELETE_TASK(state, taskId) {
-    state.tasks = state.tasks.filter((task) => task.id !== taskId);
-    localStorage.setItem("tasks", JSON.stringify(state.tasks));
-  },
+const getters = {
+  allTasks: (state) => state.tasks,
+  completedTasks: (state) => state.tasks.filter((task) => task.completed),
+  pendingTasks: (state) => state.tasks.filter((task) => !task.completed),
 };
 
 const actions = {
   addTask({ commit }, task) {
-    commit("ADD_TASK", task);
+    commit("newTask", task);
   },
-  editTask({ commit }, task) {
-    commit("EDIT_TASK", task);
+  deleteTask({ commit }, id) {
+    commit("removeTask", id);
   },
-  deleteTask({ commit }, taskId) {
-    commit("DELETE_TASK", taskId);
+  updateTask({ commit }, updatedTask) {
+    commit("editTask", updatedTask);
+  },
+  toggleTaskStatus({ commit }, id) {
+    commit("toggleStatus", id);
   },
 };
 
-const getters = {
-  getAllTasks: (state) => state.tasks,
+const mutations = {
+  newTask: (state, task) => {
+    state.tasks.push(task);
+    localStorage.setItem("tasks", JSON.stringify(state.tasks));
+  },
+  removeTask: (state, id) => {
+    state.tasks = state.tasks.filter((task) => task.id !== id);
+    localStorage.setItem("tasks", JSON.stringify(state.tasks));
+  },
+  editTask: (state, updatedTask) => {
+    const index = state.tasks.findIndex((task) => task.id === updatedTask.id);
+    if (index !== -1) {
+      state.tasks.splice(index, 1, updatedTask);
+      localStorage.setItem("tasks", JSON.stringify(state.tasks));
+    }
+  },
+  toggleStatus: (state, id) => {
+    const task = state.tasks.find((task) => task.id === id);
+    if (task) {
+      task.completed = !task.completed;
+      localStorage.setItem("tasks", JSON.stringify(state.tasks));
+    }
+  },
 };
 
 export default {
-  namespaced: true,
   state,
-  mutations,
-  actions,
   getters,
+  actions,
+  mutations,
 };
