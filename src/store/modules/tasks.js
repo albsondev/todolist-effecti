@@ -1,5 +1,40 @@
+function generateRandomTasks(count) {
+  const priorities = ["low", "medium", "high"];
+  const tasks = [];
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+
+  function getRandomDate() {
+    const start = today.getDate();
+    const end = new Date(currentYear, currentMonth + 1, 0).getDate(); // Último dia do mês atual
+    const day = Math.floor(Math.random() * (end - start + 1)) + start;
+    return new Date(currentYear, currentMonth, day).toISOString().substr(0, 10);
+  }
+
+  for (let i = 0; i < count; i++) {
+    tasks.push({
+      id: i,
+      title: `Task ${i + 1}`,
+      description: `Description for task ${i + 1}`,
+      priority: priorities[Math.floor(Math.random() * priorities.length)],
+      completed: false,
+      date: getRandomDate(),
+    });
+  }
+
+  return tasks;
+}
+
+// Verifique se o localStorage está vazio e inicialize com tarefas simuladas se necessário
+let storedTasks = JSON.parse(localStorage.getItem("tasks"));
+if (!storedTasks || storedTasks.length === 0) {
+  storedTasks = generateRandomTasks(100);
+  localStorage.setItem("tasks", JSON.stringify(storedTasks));
+}
+
 const state = {
-  tasks: JSON.parse(localStorage.getItem("tasks")) || [],
+  tasks: storedTasks,
 };
 
 const getters = {
