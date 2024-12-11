@@ -66,6 +66,8 @@ export default {
       showForm: false,
       showCalendar: false,
       selectedTasks: [],
+      snackbarMessage: "",
+      snackbar: false,
     };
   },
   computed: {

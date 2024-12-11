@@ -4,9 +4,12 @@
       <v-col cols="12" md="3" class="border-r">
         <h3 class="col-low border-b text-center">Low</h3>
         <v-card v-for="task in lowPriorityTasks" :key="task.id" class="mb-2">
-          <v-card-title>{{ task.title }}</v-card-title>
-          <v-card-subtitle>{{ task.description }}</v-card-subtitle>
-          <v-card-actions>
+          <v-card-title class="card-title">{{ task.title }}</v-card-title>
+          <div class="divider"></div>
+          <v-card-subtitle class="card-subtitle">{{
+            task.description
+          }}</v-card-subtitle>
+          <v-card-actions class="card-footer">
             <v-btn icon @click="$emit('edit-task', task)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
@@ -29,8 +32,11 @@
         <h3 class="col-medium border-b text-center">Medium</h3>
         <v-card v-for="task in mediumPriorityTasks" :key="task.id" class="mb-2">
           <v-card-title>{{ task.title }}</v-card-title>
-          <v-card-subtitle>{{ task.description }}</v-card-subtitle>
-          <v-card-actions>
+          <div class="divider"></div>
+          <v-card-subtitle class="card-subtitle">{{
+            task.description
+          }}</v-card-subtitle>
+          <v-card-actions class="card-footer">
             <v-btn icon @click="$emit('edit-task', task)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
@@ -53,8 +59,11 @@
         <h3 class="col-high border-b text-center">High</h3>
         <v-card v-for="task in highPriorityTasks" :key="task.id" class="mb-2">
           <v-card-title>{{ task.title }}</v-card-title>
-          <v-card-subtitle>{{ task.description }}</v-card-subtitle>
-          <v-card-actions>
+          <div class="divider"></div>
+          <v-card-subtitle class="card-subtitle">{{
+            task.description
+          }}</v-card-subtitle>
+          <v-card-actions class="card-footer">
             <v-btn icon @click="$emit('edit-task', task)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
@@ -77,8 +86,11 @@
         <h3 class="col-completed border-b text-center">Completed</h3>
         <v-card v-for="task in completedTasks" :key="task.id" class="mb-2">
           <v-card-title>{{ task.title }}</v-card-title>
-          <v-card-subtitle>{{ task.description }}</v-card-subtitle>
-          <v-card-actions>
+          <div class="divider"></div>
+          <v-card-subtitle class="card-subtitle">{{
+            task.description
+          }}</v-card-subtitle>
+          <v-card-actions class="card-footer">
             <v-btn icon @click="$emit('edit-task', task)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
@@ -215,5 +227,27 @@ h3 {
 .col-completed {
   border-bottom: 1px solid green !important;
   border-width: 3px !important;
+}
+
+.row-kanban .v-card > .card-title {
+  width: 100% !important;
+}
+
+.row-kanban .v-card > .divider {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: #ddd;
+  margin-top: -0.5em;
+}
+
+.row-kanban .v-card > .card-subtitle {
+  background-color: #fafafa;
+}
+
+.row-kanban .v-card > .card-footer {
+  background-color: #ffffff;
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
+  border-top: 1px solid #ddd;
 }
 </style>
