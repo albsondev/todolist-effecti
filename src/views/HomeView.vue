@@ -39,6 +39,7 @@
             :tasks="filteredTasks"
             @edit-task="editTask"
             @delete-task="deleteTask"
+            @toggle-task-status="toggleTaskStatus"
           />
         </transition>
       </v-col>
@@ -101,6 +102,12 @@ export default {
       this.currentTask = this.createEmptyTask();
       this.showForm = true;
     },
+    updateTasks(tasks) {
+      this.$store.commit("updateTasks", tasks);
+    },
+    toggleTaskStatus(task) {
+      this.$store.dispatch("toggleTaskStatus", task);
+    },
     createEmptyTask() {
       return {
         title: "",
@@ -135,28 +142,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.mb-4 {
-  margin-bottom: 16px;
-}
-.flex {
-  display: flex;
-  justify-content: space-between;
-  align-content: center;
-}
-.mt-2 {
-  margin-top: 8px;
-}
-.mr-2 {
-  margin-right: 2em !important;
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

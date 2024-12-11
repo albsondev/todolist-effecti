@@ -74,10 +74,14 @@ const mutations = {
       localStorage.setItem("tasks", JSON.stringify(state.tasks));
     }
   },
-  toggleStatus: (state, id) => {
-    const task = state.tasks.find((task) => task.id === id);
-    if (task) {
-      task.completed = !task.completed;
+  updateTasks(state, tasks) {
+    state.tasks = tasks;
+    localStorage.setItem("tasks", JSON.stringify(state.tasks));
+  },
+  toggleStatus: (state, task) => {
+    const taskToUpdate = state.tasks.find((t) => t.id === task.id);
+    if (taskToUpdate) {
+      taskToUpdate.completed = !taskToUpdate.completed;
       localStorage.setItem("tasks", JSON.stringify(state.tasks));
     }
   },

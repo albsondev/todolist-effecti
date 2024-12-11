@@ -14,8 +14,8 @@
               v-for="(task, i) in tracked[date]"
               :key="i"
               :title="task.title"
-              :color="getTaskColor(task.priority)"
-              :width="`${getTaskPercentage(date, task.priority)}%`"
+              :color="getTaskColor(task)"
+              :width="`${getTaskPercentage(date, task)}%`"
               height="100%"
               tile
             ></v-sheet>
@@ -39,21 +39,31 @@ export default {
     };
   },
   methods: {
-    getTaskColor(priority) {
-      switch (priority) {
-        case "low":
-          return "#90e0ef";
-        case "medium":
-          return "#0077b6";
-        case "high":
-          return "#03045e";
-        default:
-          return "grey";
+    getTaskColor(task) {
+      if (task.completed) {
+        return "#20bf6b";
+      } else {
+        switch (task.priority) {
+          case "low":
+            return "#90e0ef";
+          case "medium":
+            return "#0077b6";
+          case "high":
+            return "#03045e";
+          default:
+            return "grey";
+        }
       }
     },
-    getTaskPercentage(date, priority) {
+    getTaskPercentage(date, task) {
       const tasks = this.tracked[date];
-      const count = tasks.filter((task) => task.priority === priority).length;
+      if (!tasks) return 0;
+
+      const count = tasks.filter(
+        (t) => t.priority === task.priority && t.completed === task.completed
+      ).length;
+      if (!tasks.length) return 0;
+
       return (count / tasks.length) * 100;
     },
     handleDayClick({ date }) {
