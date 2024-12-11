@@ -1,5 +1,5 @@
-<template class="bg-light">
-  <v-sheet height="78vh">
+<template>
+  <v-sheet height="70vh">
     <v-calendar
       class="bg-light"
       :now="today"
@@ -23,11 +23,15 @@
         </v-row>
       </template>
     </v-calendar>
+    <priority-legend />
   </v-sheet>
 </template>
 
 <script>
+import PriorityLegend from "./PriorityLegend.vue";
+
 export default {
+  components: { PriorityLegend },
   props: ["tracked"],
   data() {
     return {
