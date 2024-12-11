@@ -1,49 +1,56 @@
 <template>
   <v-row class="bg-light pd row-kanban">
-    <v-col cols="12" md="4" class="border-r">
-      <h3 class="col-low border-b text-center">Low</h3>
-      <v-card v-for="task in lowPriorityTasks" :key="task.id" class="mb-2">
-        <v-card-title>{{ task.title }}</v-card-title>
-        <v-card-subtitle>{{ task.description }}</v-card-subtitle>
-        <v-card-actions>
-          <v-btn icon @click="$emit('edit-task', task)">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-          <v-btn icon @click="$emit('delete-task', task.id)">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-    <v-col cols="12" md="4" class="border-r">
-      <h3 class="col-medium border-b text-center">Medium</h3>
-      <v-card v-for="task in mediumPriorityTasks" :key="task.id" class="mb-2">
-        <v-card-title>{{ task.title }}</v-card-title>
-        <v-card-subtitle>{{ task.description }}</v-card-subtitle>
-        <v-card-actions>
-          <v-btn icon @click="$emit('edit-task', task)">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-          <v-btn icon @click="$emit('delete-task', task.id)">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-    <v-col cols="12" md="4" class="">
-      <h3 class="col-high border-b text-center">High</h3>
-      <v-card v-for="task in highPriorityTasks" :key="task.id" class="mb-2">
-        <v-card-title>{{ task.title }}</v-card-title>
-        <v-card-subtitle>{{ task.description }}</v-card-subtitle>
-        <v-card-actions>
-          <v-btn icon @click="$emit('edit-task', task)">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-          <v-btn icon @click="$emit('delete-task', task.id)">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+    <template v-if="tasks.length > 0">
+      <v-col cols="12" md="4" class="border-r">
+        <h3 class="col-low border-b text-center">Low</h3>
+        <v-card v-for="task in lowPriorityTasks" :key="task.id" class="mb-2">
+          <v-card-title>{{ task.title }}</v-card-title>
+          <v-card-subtitle>{{ task.description }}</v-card-subtitle>
+          <v-card-actions>
+            <v-btn icon @click="$emit('edit-task', task)">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-btn icon @click="$emit('delete-task', task.id)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="4" class="border-r">
+        <h3 class="col-medium border-b text-center">Medium</h3>
+        <v-card v-for="task in mediumPriorityTasks" :key="task.id" class="mb-2">
+          <v-card-title>{{ task.title }}</v-card-title>
+          <v-card-subtitle>{{ task.description }}</v-card-subtitle>
+          <v-card-actions>
+            <v-btn icon @click="$emit('edit-task', task)">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-btn icon @click="$emit('delete-task', task.id)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="4" class="">
+        <h3 class="col-high border-b text-center">High</h3>
+        <v-card v-for="task in highPriorityTasks" :key="task.id" class="mb-2">
+          <v-card-title>{{ task.title }}</v-card-title>
+          <v-card-subtitle>{{ task.description }}</v-card-subtitle>
+          <v-card-actions>
+            <v-btn icon @click="$emit('edit-task', task)">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-btn icon @click="$emit('delete-task', task.id)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </template>
+    <v-col v-else class="empty-state">
+      <v-alert border="bottom" dense prominent shaped type="info">
+        No tasks registered yet.
+      </v-alert>
     </v-col>
   </v-row>
 </template>
@@ -142,11 +149,10 @@ h3 {
   width: 100% !important;
 }
 
-v-card-subtitle {
-  color: #666;
-}
-
-v-card-actions {
-  justify-content: flex-end;
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100%;
 }
 </style>
