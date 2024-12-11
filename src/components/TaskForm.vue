@@ -96,6 +96,7 @@ export default {
         id: this.task.id || Date.now(),
       });
       this.resetForm();
+      this.$emit("form-submitted");
     },
     resetForm() {
       this.localTask = {

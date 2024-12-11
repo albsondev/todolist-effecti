@@ -22,6 +22,7 @@
           v-if="showForm"
           @save-task="handleSaveTask"
           @cancel="cancelEdit"
+          @form-submitted="handleFormSubmitted"
           :task="currentTask"
         />
       </v-col>
@@ -44,6 +45,10 @@
         </transition>
       </v-col>
     </v-row>
+    <v-snackbar v-model="snackbar" :timeout="3000" top right color="success">
+      {{ snackbarMessage }}
+      <v-btn color="white" text @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -86,8 +91,10 @@ export default {
     handleSaveTask(task) {
       if (this.currentTask.id) {
         this.$store.dispatch("updateTask", task);
+        this.showSnackbar("Task updated successfully!");
       } else {
         this.$store.dispatch("addTask", task);
+        this.showSnackbar("Task added successfully!");
       }
       this.resetCurrentTask();
     },
@@ -97,6 +104,7 @@ export default {
     },
     deleteTask(id) {
       this.$store.dispatch("deleteTask", id);
+      this.showSnackbar("Task removed successfully!");
     },
     resetCurrentTask() {
       this.currentTask = this.createEmptyTask();
@@ -133,6 +141,20 @@ export default {
     },
     cancelEdit() {
       this.showForm = false;
+    },
+    handleFormSubmitted() {
+      this.scrollToTop();
+      this.showForm = false;
+    },
+    scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    },
+    showSnackbar(message) {
+      this.snackbarMessage = message;
+      this.snackbar = true;
     },
   },
   created() {
