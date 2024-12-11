@@ -58,7 +58,7 @@ export default {
       searchQuery: "",
       currentTask: this.createEmptyTask(),
       showForm: false,
-      showCalendar: true,
+      showCalendar: false,
       selectedTasks: [],
     };
   },
